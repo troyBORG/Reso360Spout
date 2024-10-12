@@ -38,6 +38,8 @@ namespace Reso360Spout {
 
     public class UnityEntry : MonoBehaviour
     {
+        GameObject cube;
+
         GameObject root;
         GameObject CameraRoot;
 
@@ -46,10 +48,11 @@ namespace Reso360Spout {
 
         UnityEngine.Camera CameraComponent;
         IntPtr Plugin;
-        UnityEngine.RenderTexture _SourceTexture;
         UnityEngine.RenderTexture SourceTexture;
         UnityEngine.Texture2D SharedTexture;
 
+
+        // load assetbundle
         void SendRenderTexture(UnityEngine.RenderTexture source)
         {
             // Plugin lazy initialization
@@ -93,6 +96,7 @@ namespace Reso360Spout {
 
         void Start()
         {
+
             var assets = AssetBundle.LoadFromFile(@"rml_mods\cubeto360");
             assets.LoadAllAssets();
 
@@ -119,15 +123,14 @@ namespace Reso360Spout {
             CameraRoot.transform.rotation = UnityEngine.Quaternion.identity;
             CameraRoot.transform.parent = root.transform;
 
-            Plugin = PluginEntry.CreateSender("VR180Cam", 6144, 3072);
+            Plugin = PluginEntry.CreateSender("VR180Cam", 6144, 6144);
             CameraComponent = CameraRoot.AddComponent<UnityEngine.Camera>();
             CameraComponent.depth = -128;
-            SourceTexture = new UnityEngine.RenderTexture(6144, 3072, 24);
-            _SourceTexture = new UnityEngine.RenderTexture(6144, 3072, 24);
-            CameraComponent.targetTexture = _SourceTexture;
+            SourceTexture = new UnityEngine.RenderTexture(6144, 6144, 24);
             var cubeComponent = CameraRoot.AddComponent<CubemapToOtherProjection>();
             cubeComponent.RenderTarget = SourceTexture;
-            cubeComponent.ProjectionType = ProjectionType.Equirectangular_180;
+            cubeComponent.CubemapSize = 2048;
+            cubeComponent.ProjectionType = ProjectionType.Equirectangular_360;
             cubeComponent.RenderInStereo = true;
         }
 
