@@ -123,10 +123,10 @@ namespace Reso360Spout {
             CameraRoot.transform.rotation = UnityEngine.Quaternion.identity;
             CameraRoot.transform.parent = root.transform;
 
-            Plugin = PluginEntry.CreateSender("VR180Cam", 6144, 6144);
+            Plugin = PluginEntry.CreateSender("VR180Cam", 6144, 3072);
             CameraComponent = CameraRoot.AddComponent<UnityEngine.Camera>();
             CameraComponent.depth = -128;
-            SourceTexture = new UnityEngine.RenderTexture(6144, 6144, 24);
+            SourceTexture = new UnityEngine.RenderTexture(6144, 3072, 24);
             var cubeComponent = CameraRoot.AddComponent<CubemapToOtherProjection>();
             cubeComponent.RenderTarget = SourceTexture;
             cubeComponent.CubemapSize = 2048;
