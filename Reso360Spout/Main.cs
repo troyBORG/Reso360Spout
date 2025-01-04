@@ -1,8 +1,10 @@
 ﻿using Elements.Core;
+using FrooxEngine;
 using HarmonyLib;
 using ResoniteModLoader;
 using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 
 namespace Reso360Spout {
@@ -27,7 +29,7 @@ namespace Reso360Spout {
 
 
         // load assetbundle
-        void SendRenderTexture(UnityEngine.RenderTexture source)
+        void SendRenderTexture()
         {
             // Plugin lazy initialization
             if (Plugin == System.IntPtr.Zero)
@@ -42,7 +44,7 @@ namespace Reso360Spout {
 
             if (SharedTexture != null)
             {
-                if (SharedTexture.height != source.height || SharedTexture.width != source.width)
+                if (SharedTexture.height != SourceTexture.height || SharedTexture.width != SourceTexture.width)
                 {
                     if (SharedTexture != null)
                     {
@@ -69,14 +71,55 @@ namespace Reso360Spout {
 
 
             // Shared texture update
-            if (SharedTexture != null)
-            {
-                var tempRT = UnityEngine.RenderTexture.GetTemporary
-                    (SharedTexture.width, SharedTexture.height);
-                Graphics.Blit(source, tempRT, new Vector2(1.0f, -1.0f), new Vector2(0.0f, 1.0f));
-                Graphics.CopyTexture(tempRT, SharedTexture);
-                UnityEngine.RenderTexture.ReleaseTemporary(tempRT);
-            }
+            //if (SharedTexture != null)
+            //{
+            //    var tempRT = UnityEngine.RenderTexture.GetTemporary
+            //        (SharedTexture.width, SharedTexture.height);
+            //    Graphics.Blit(SourceTexture, tempRT, new Vector2(1.0f, -1.0f), new Vector2(0.0f, 1.0f));
+            //    Graphics.CopyTexture(tempRT, SharedTexture);
+            //    UnityEngine.RenderTexture.ReleaseTemporary(tempRT);
+            //}
+
+            // コマンドバッファを生成
+            var cmd = new CommandBuffer();
+            cmd.name = "SpoutSend";
+
+            // 一時的なRTのIDを取得
+            int tempRTId = UnityEngine.Shader.PropertyToID("_TempSpoutRT");
+
+            // 一時的なRTをコマンドバッファで確保
+            cmd.GetTemporaryRT(
+                tempRTId,
+                SharedTexture.width,
+                SharedTexture.height,
+                0,                      // Depth Buffer
+                FilterMode.Bilinear,
+                RenderTextureFormat.ARGB32
+            );
+
+            // Blit 相当
+            // Unityのバージョンによっては cmd.Blit でスケール・オフセット付きが無い場合があります。
+            // その場合はマテリアルを用意してUVを反転させるなど別途工夫が必要です。
+            // ここではスケールオフセット付きが使えるという前提で記述しています。
+            cmd.Blit(
+                SourceTexture,                    // 元テクスチャ
+                tempRTId,                         // 出力先(一時RT)
+                new Vector2(1.0f, -1.0f),         // scale
+                new Vector2(0.0f, 1.0f)           // offset
+            );
+
+            // CopyTexture 相当
+            // SharedTexture は Texture2D なので、コマンドバッファでも CopyTexture 可能
+            cmd.CopyTexture(tempRTId, 0, 0, SharedTexture, 0, 0);
+
+            // 一時RTを解放
+            cmd.ReleaseTemporaryRT(tempRTId);
+
+            // コマンドバッファを実行
+            Graphics.ExecuteCommandBuffer(cmd);
+
+            // コマンドバッファを破棄（使い回さない場合）
+            cmd.Release();
         }
 
 
@@ -113,7 +156,9 @@ namespace Reso360Spout {
 
             CameraComponent = CameraRoot.AddComponent<UnityEngine.Camera>();
             CameraComponent.depth = -128;
+            CameraComponent.fieldOfView = 90.0f;
             cubeComponent = CameraRoot.AddComponent<CubemapToOtherProjection>();
+            cubeComponent.UseUnityInternalCubemapRenderer = true;
 
             if (Main.Config.GetValue<bool>(Main.SPOUT_ENABLE))
             {
@@ -126,12 +171,19 @@ namespace Reso360Spout {
             cubeComponent.RenderInStereo = Main.Config.GetValue<bool>(Main.RENDER_IN_STEREO);
             cubeComponent.ProjectionType = Main.Config.GetValue<ProjectionType>(Main.PROJECTION_TYPE);
             cubeComponent.CubemapSize = (int)Main.Config.GetValue<Main.CubeMapSize>(Main.CUBEMAP_SIZE);
+
+
         }
+
+
 
         void Update()
         {
             try
             {
+                CameraRoot.transform.position = new UnityEngine.Vector3(0.0f, 0.0f, 0.0f);
+                CameraRoot.transform.rotation = UnityEngine.Quaternion.identity;
+
                 root.transform.position = Main.CameraOrigin;
                 root.transform.rotation = Main.CameraRotation;
                 root.transform.localScale = Main.CameraScale;
@@ -142,7 +194,7 @@ namespace Reso360Spout {
 
                 // Render texture mode update
                 if (SourceTexture != null)
-                    SendRenderTexture(SourceTexture);
+                    SendRenderTexture();
 
             } catch (Exception e)
             {
@@ -173,10 +225,10 @@ namespace Reso360Spout {
         public static readonly ModConfigurationKey<ProjectionType> PROJECTION_TYPE = new ModConfigurationKey<ProjectionType>("PROJECTION_TYPE", "Projection Type", () => ProjectionType.Equirectangular_180);
 
 
-        public enum CubeMapSize: int { Low=512, Mid=1024, High=2048 };
+        public enum CubeMapSize: int { Low=512, Mid=1024, High=2048, Ultra=3072 };
 
         [AutoRegisterConfigKey]
-        public static readonly ModConfigurationKey<CubeMapSize> CUBEMAP_SIZE = new ModConfigurationKey<CubeMapSize>("CUBEMAP_SIZE", "cubemap size 512,1024,2048", () => CubeMapSize.High);
+        public static readonly ModConfigurationKey<CubeMapSize> CUBEMAP_SIZE = new ModConfigurationKey<CubeMapSize>("CUBEMAP_SIZE", "cubemap size 512,1024,2048,3072", () => CubeMapSize.High);
 
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<int2> OUTPUT_SIZE = new ModConfigurationKey<int2>("OUTPUT_SIZE", "output size", () => new int2(6144, 3072));
@@ -273,8 +325,9 @@ namespace Reso360Spout {
 
             var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             Msg("scene name: " + scene.name);
+
             modEntry = new UnityEngine.GameObject();
-            modEntry.name = "MODEntry";
+            modEntry.name = "___MODEntry";
             unityEntry = modEntry.AddComponent<UnityEntry>();
 
 

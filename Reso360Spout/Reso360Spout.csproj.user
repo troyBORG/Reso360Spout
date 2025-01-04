@@ -6,4 +6,10 @@
     <StartProgram>C:\Program Files %28x86%29\Steam\steamapps\common\Resonite\Resonite.exe</StartProgram>
     <StartWorkingDirectory>C:\Program Files %28x86%29\Steam\steamapps\common\Resonite\</StartWorkingDirectory>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files %28x86%29\Steam\steamapps\common\Resonite\Resonite.exe</StartProgram>
+    <StartArguments>SkipIntroTutorial -DoNotAutoLoadHome -ResetDash -DataPath "C:\Data_Path"   -LoadAssembly Libraries/ResoniteModLoader.dll -monitor 1</StartArguments>
+    <StartWorkingDirectory>C:\Program Files %28x86%29\Steam\steamapps\common\Resonite\</StartWorkingDirectory>
+  </PropertyGroup>
 </Project>
