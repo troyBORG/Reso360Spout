@@ -145,7 +145,7 @@ public class CubemapToOtherProjection : MonoBehaviour
             var tmpStereoSepration = _camera.stereoSeparation;
             var tmpStereoTargetEye = _camera.stereoTargetEye;
             _camera.stereoSeparation = StereoSeparation;
-            _camera.stereoTargetEye = StereoTargetEyeMask.Both;
+            _camera.stereoTargetEye = StereoTargetEyeMask.None;
 
             if (ProjectionType == ProjectionType.Equirectangular_360)
             {
@@ -216,22 +216,24 @@ public class CubemapToOtherProjection : MonoBehaviour
                     break;
             }
 
+         
             _camera.RenderToCubemap(_cubemap, 63, eye);
 
             SetPositionScaleOffset(scaleX, scaleY, offsetX, offsetY);
             var q = Quaternion.identity;
             var t = _camera.transform;
-            while (t != null)
-            {
-                q = q * t.localRotation;
-                t = t.parent;
-            }
+            //while (t != null)
+            //{
+            //    q = q * t.localRotation;
+            //    t = t.parent;
+            //}
             _material.SetMatrix("_Matrix", Matrix4x4.Rotate(q));
             Graphics.Blit(_cubemap, RenderTarget, _material);
         }
         else
         {
             float ipdOffset = 0.0f;
+     
             switch (eye)
             {
                 case Camera.MonoOrStereoscopicEye.Left:
