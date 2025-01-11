@@ -24,3 +24,41 @@ ResoniteでVR180動画や、360度動画を撮影できるMODです。
 [zlib license](http://zlib.net/zlib_license.html)
 
 * CubemapToOtherProjection.shader: "CubemapToEquirectangular" by [Bartosz](https://stackoverflow.com/users/1531778/bartosz) is licensed under CC BY-SA 3.0. ([Converting a Cubemap into Equirectangular Panorama](https://stackoverflow.com/questions/34250742/converting-a-cubemap-into-equirectangular-panorama))
+
+
+---
+
+# Reso360Spout
+
+A mod for Resonite that allows you to record VR180 and 360° videos.  
+You can capture videos like [this one](https://deovr.com/voqxc9).
+
+## Installation
+
+1. Install the Resonite Mod Loader.
+2. Download the [latest release](https://github.com/rassi0429/Reso360Spout/releases/latest) and place all of the following files into your `rml_mods` folder:
+   - `cubeto360`
+   - `KlakSpout.dll`
+   - `Reso360Spout.dll`
+3. Install the [Spout plugin for OBS](https://github.com/Off-World-Live/obs-spout2-plugin).
+
+## OBS Setup
+
+1. Set both the Canvas Resolution and the Output (Scaling) Resolution to **6144x3072**.
+2. Add a Spout source to your scene.
+
+If you would like a pre-configured Scene Collection and Profile for OBS, you can download them [here](https://drive.google.com/drive/folders/1ZkWt8Ff8cR0690dlRtUjBLjwp9gejyir?usp=drive_link).
+
+## Resonite Setup
+
+1. Launch Resonite. Your video feed will automatically be sent to OBS via Spout.
+2. Create a Slot named `#Camera` if you want the camera to follow that Slot.
+3. You can change the projection mode and camera settings in the Resonite Mod Settings menu.
+4. Have fun recording!
+
+## License
+
+[zlib license](http://zlib.net/zlib_license.html)
+
+- **CubemapToOtherProjection.shader**: "CubemapToEquirectangular" by [Bartosz](https://stackoverflow.com/users/1531778/bartosz) is licensed under CC BY-SA 3.0.  
+  ([Converting a Cubemap into Equirectangular Panorama](https://stackoverflow.com/questions/34250742/converting-a-cubemap-into-equirectangular-panorama))
