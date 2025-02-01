@@ -1,4 +1,4 @@
-﻿using Elements.Core;
+using Elements.Core;
 using FrooxEngine;
 using HarmonyLib;
 using ResoniteModLoader;
@@ -267,6 +267,11 @@ namespace Reso360Spout
             new ModConfigurationKey<bool>("HIDE_LOCAL", "localを映さないようにする",
                 () => false);
 
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<string> CAMERA_SLOT_NAME =
+            new ModConfigurationKey<string>("CAMERA_SLOT_NAME", "Camera Slot Name", () => "#Camera");
+
+
         // --- Private Fields -----------------------------------------------
         private static GameObject _modEntry;
         private static UnityEntry _unityEntry;
@@ -394,7 +399,8 @@ namespace Reso360Spout
                 __instance.WorldManager.FocusedWorld.RunSynchronously(() =>
                 {
                     // 重そうなのであとで最適化を検討
-                    var origin = __instance.WorldManager.FocusedWorld.RootSlot.FindChildInHierarchy("#Camera");
+                    string cameraSlotName = Config.GetValue(CAMERA_SLOT_NAME);
+                    var origin = __instance.WorldManager.FocusedWorld.RootSlot.FindChildInHierarchy(cameraSlotName);
                     if (origin != null)
                     {
                         CameraOrigin.Set(
