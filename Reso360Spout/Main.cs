@@ -53,6 +53,9 @@ namespace Reso360Spout
 
             CameraComponent.nearClipPlane = Main.Config.GetValue<float>(Main.NEAR_CLIP);
             CameraComponent.farClipPlane = Main.Config.GetValue<float>(Main.FAR_CLIP);
+
+            // Ensure bit 28 is off at startup
+            CameraComponent.cullingMask &= ~(1 << 28);
         }
 
         private void Update()
@@ -128,8 +131,8 @@ namespace Reso360Spout
             CameraComponent.fieldOfView = 90.0f;
             CameraComponent.stereoTargetEye = StereoTargetEyeMask.None;
             CameraComponent.stereoSeparation = 0.065f;
-        }
 
+        }
         /// <summary>
         /// Spout（プラグイン）を初期化する
         /// </summary>
@@ -215,7 +218,7 @@ namespace Reso360Spout
         // --- Properties (Override) ----------------------------------------
         public override string Name => "Reso360Spout";
         public override string Author => "kka429";
-        public override string Version => "0.0.1";
+        public override string Version => "0.0.2";
         public override string Link => "https://github.com/rassi0429/Reso360Spout";
 
         // --- Public Fields ------------------------------------------------
@@ -265,7 +268,12 @@ namespace Reso360Spout
         [AutoRegisterConfigKey]
         public static readonly ModConfigurationKey<bool> HIDE_LOCAL =
             new ModConfigurationKey<bool>("HIDE_LOCAL", "localを映さないようにする",
-                () => false);
+                () => true);
+
+        [AutoRegisterConfigKey]
+        public static readonly ModConfigurationKey<string> CAMERA_SLOT_NAME =
+            new ModConfigurationKey<string>("CAMERA_SLOT_NAME", "Camera Slot Name", () => "#Camera");
+
 
         // --- Private Fields -----------------------------------------------
         private static GameObject _modEntry;
@@ -308,14 +316,14 @@ namespace Reso360Spout
                 if (configChangedEvent.Key == HIDE_LOCAL)
                 {
                     if (Config.GetValue(HIDE_LOCAL))
-                    {
-                        _unityEntry.CameraComponent.cullingMask &=
-                            ~((1 << 28) + (1 << 29) + (1 << 30) + (1 << 31));
+                {  
+                        _unityEntry.CameraComponent.cullingMask &= ~((1 << 29) + (1 << 30) + (1 << 31)); // Turn bits 29-31 OFF
+                        _unityEntry.CameraComponent.cullingMask &= ~(1 << 28); // Always turn bit 28 OFF
                     }
                     else
                     {
-                        _unityEntry.CameraComponent.cullingMask |=
-                            ((1 << 28) + (1 << 29) + (1 << 30) + (1 << 31));
+                        _unityEntry.CameraComponent.cullingMask |= ((1 << 29) + (1 << 30) + (1 << 31)); // Turn bits 29-31 ON
+                        _unityEntry.CameraComponent.cullingMask &= ~(1 << 28); // Ensure bit 28 is always OFF
                     }
                 }
 
@@ -394,7 +402,8 @@ namespace Reso360Spout
                 __instance.WorldManager.FocusedWorld.RunSynchronously(() =>
                 {
                     // 重そうなのであとで最適化を検討
-                    var origin = __instance.WorldManager.FocusedWorld.RootSlot.FindChildInHierarchy("#Camera");
+                    string cameraSlotName = Config.GetValue(CAMERA_SLOT_NAME);
+                    var origin = __instance.WorldManager.FocusedWorld.RootSlot.FindChildInHierarchy(cameraSlotName);
                     if (origin != null)
                     {
                         CameraOrigin.Set(
