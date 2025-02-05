@@ -15,7 +15,7 @@ ResoniteでVR180動画や、360度動画を撮影できるMODです。
 
 ## Resoniteのセットアップ
 1. Resoniteを起動すると、自動的にSpoutを介してOBSに映像が表示されます。
-1. ``#Camera``という名前のSlotを作成すると、そのSlotにカメラが追従します。
+1. カメラが追従するSlotの名前を自由に設定できるようになりました。これにより、複数のユーザーが同時にMODを利用できます。
 1. Resonite Mod Settingsのメニューから投影モードやカメラの設定を変更できます。
 1. 撮影をお楽しみください！
 
@@ -52,7 +52,7 @@ If you would like a pre-configured Scene Collection and Profile for OBS, you can
 ## Resonite Setup
 
 1. Launch Resonite. Your video feed will automatically be sent to OBS via Spout.
-2. Create a Slot named `#Camera` if you want the camera to follow that Slot.
+2. You can now choose a custom name for the Slot where the camera follows. This allows multiple users to use the mod at the same time.
 3. You can change the projection mode and camera settings in the Resonite Mod Settings menu.
 4. Have fun recording!
 
