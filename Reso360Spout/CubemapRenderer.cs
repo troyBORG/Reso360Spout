@@ -1,6 +1,8 @@
 using Reso360Spout;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UObject = UnityEngine.Object;
+
 
 public enum GammaConvertType
 {
@@ -98,31 +100,31 @@ public class CubemapRenderer : System.IDisposable
 
         if (_material != null)
         {
-            Object.Destroy(_material);
+            UObject.Destroy(_material);
             _material = null;
         }
 
         if (_mesh != null)
         {
-            Object.Destroy(_mesh);
+            UObject.Destroy(_mesh);
             _mesh = null;
         }
 
         if (_tempRT != null)
         {
-            Object.Destroy(_tempRT);
+            UObject.Destroy(_tempRT);
             _tempRT = null;
         }
 
         if (_cubemap != null)
         {
-            Object.Destroy(_cubemap);
+            UObject.Destroy(_cubemap);
             _cubemap = null;
         }
 
         if (_shader != null)
         {
-            Object.Destroy(_shader);
+            UObject.Destroy(_shader);
             _shader = null;
         }
     }
@@ -135,7 +137,7 @@ public class CubemapRenderer : System.IDisposable
             {
                 if (_tempRT.format != RenderTextureFormat.DefaultHDR)
                 {
-                    Object.Destroy(_tempRT);
+                    UObject.Destroy(_tempRT);
                     _tempRT = null;
                 }
             }
@@ -143,7 +145,7 @@ public class CubemapRenderer : System.IDisposable
             {
                 if (_tempRT.format != RenderTextureFormat.Default)
                 {
-                    Object.Destroy(_tempRT);
+                    UObject.Destroy(_tempRT);
                     _tempRT = null;
                 }
             }
