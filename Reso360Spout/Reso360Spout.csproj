@@ -1,83 +1,124 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F86E667-FCC5-42DC-A2B3-249959900C44}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Reso360Spout</RootNamespace>
-    <AssemblyName>Reso360Spout</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>latest</LangVersion>
+    <ResonitePath Condition="'$(ResonitePath)' == ''">G:\SteamLibrary\steamapps\common\Resonite</ResonitePath>
+    <ManagedDir Condition="'$(ManagedDir)' == ''">$(ResonitePath)\Renderer\Renderite.Renderer_Data\Managed</ManagedDir>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
+
   <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <Choose>
+    <When Condition="Exists('$(ResonitePath)\rml_libs\0Harmony.dll')">
+      <PropertyGroup><HarmonyPath>$(ResonitePath)\rml_libs\0Harmony.dll</HarmonyPath></PropertyGroup>
+    </When>
+    <When Condition="Exists('$(ResonitePath)\rml_libs\HarmonyLib.dll')">
+      <PropertyGroup><HarmonyPath>$(ResonitePath)\rml_libs\HarmonyLib.dll</HarmonyPath></PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup><HarmonyPath></HarmonyPath></PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="Exists('$(ResonitePath)\Libraries\ResoniteModLoader.dll')">
+      <PropertyGroup><RmlPath>$(ResonitePath)\Libraries\ResoniteModLoader.dll</RmlPath></PropertyGroup>
+    </When>
+    <When Condition="Exists('$(ResonitePath)\ResoniteModLoader.dll')">
+      <PropertyGroup><RmlPath>$(ResonitePath)\ResoniteModLoader.dll</RmlPath></PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup><RmlPath></RmlPath></PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="Exists('$(ResonitePath)\Elements.Core.dll')">
+      <PropertyGroup><ElementsCorePath>$(ResonitePath)\Elements.Core.dll</ElementsCorePath></PropertyGroup>
+    </When>
+    <When Condition="Exists('$(ResonitePath)\Libraries\Elements.Core.dll')">
+      <PropertyGroup><ElementsCorePath>$(ResonitePath)\Libraries\Elements.Core.dll</ElementsCorePath></PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup><ElementsCorePath></ElementsCorePath></PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <Choose>
+    <When Condition="Exists('$(ResonitePath)\FrooxEngine.dll')">
+      <PropertyGroup><FrooxPath>$(ResonitePath)\FrooxEngine.dll</FrooxPath></PropertyGroup>
+    </When>
+    <When Condition="Exists('$(ResonitePath)\Libraries\FrooxEngine.dll')">
+      <PropertyGroup><FrooxPath>$(ResonitePath)\Libraries\FrooxEngine.dll</FrooxPath></PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup><FrooxPath></FrooxPath></PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+  <ItemGroup Condition="'$(HarmonyPath)' != ''">
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\rml_libs\0Harmony.dll</HintPath>
+      <HintPath>$(HarmonyPath)</HintPath>
+      <Private>false</Private>
     </Reference>
-    <Reference Include="Elements.Core">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\Elements.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="FrooxEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\FrooxEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="netstandard" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(RmlPath)' != ''">
     <Reference Include="ResoniteModLoader">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Libraries\ResoniteModLoader.dll</HintPath>
-    </Reference>
-    <Reference Include="ResoniteModSettings">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods\ResoniteModSettings.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(RmlPath)</HintPath>
+      <Private>false</Private>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="CubemapRenderer.cs" />
-    <Compile Include="CubemapToOtherProjection.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="PluginEntry.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpoutUtil.cs" />
+
+  <ItemGroup Condition="'$(ElementsCorePath)' != ''">
+    <Reference Include="Elements.Core">
+      <HintPath>$(ElementsCorePath)</HintPath>
+      <Private>false</Private>
+    </Reference>
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods\"</PostBuildEvent>
-  </PropertyGroup>
+
+  <ItemGroup Condition="'$(FrooxPath)' != ''">
+    <Reference Include="FrooxEngine">
+      <HintPath>$(FrooxPath)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+
+<ItemGroup>
+  <Reference Include="UnityEngine.CoreModule">
+    <HintPath>$(ManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+  <Reference Include="UnityEngine.AssetBundleModule">
+    <HintPath>$(ManagedDir)\UnityEngine.AssetBundleModule.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+</ItemGroup>
+
+<ItemGroup Condition="Exists('$(ManagedDir)\UnityEngine.SceneManagementModule.dll')">
+  <Reference Include="UnityEngine.SceneManagementModule">
+    <HintPath>$(ManagedDir)\UnityEngine.SceneManagementModule.dll</HintPath>
+    <Private>false</Private>
+  </Reference>
+</ItemGroup>
+
+
+<Target Name="EchoUnityPaths" BeforeTargets="Compile">
+  <Message Importance="High" Text="ManagedDir=$(ManagedDir)" />
+  <Message Importance="High" Text="CoreModule Exists=$([System.IO.File]::Exists('$(ManagedDir)\UnityEngine.CoreModule.dll'))" />
+  <Message Importance="High" Text="AssetBundle Exists=$([System.IO.File]::Exists('$(ManagedDir)\UnityEngine.AssetBundleModule.dll'))" />
+  <Message Importance="High" Text="SceneManagement Exists=$([System.IO.File]::Exists('$(ManagedDir)\UnityEngine.SceneManagementModule.dll'))" />
+</Target>
+
+
+
+  <Target Name="PostBuildCopy" AfterTargets="Build">
+    <Copy SourceFiles="$(TargetDir)$(TargetFileName)"
+          DestinationFolder="$(ResonitePath)\rml_mods\" />
+  </Target>
 </Project>
