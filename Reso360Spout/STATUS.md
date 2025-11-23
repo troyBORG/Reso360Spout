@@ -1,8 +1,15 @@
 # Reso360Spout - BepInEx.Renderer Integration Status
 
-## Current Status: BLOCKED - Missing RML Mod DLL
+## Current Status: BLOCKED - Missing RML Mod DLL + Need to Refactor IPC
 
 This branch contains work to adapt Reso360Spout for Resonite's "splittening" update, which separated FrooxEngine into a separate process from Unity. The mod now requires BepInEx.Renderer to load in the Unity Renderer process.
+
+**UPDATE:** After examining [ResoniteSpout](https://github.com/Zozokasu/ResoniteSpout) (a working Spout mod for Resonite), we discovered that our IPC approach needs to be refactored. ResoniteSpout uses:
+- **InterprocessLib** for IPC (not static fields)
+- **Renderite.Shared's RendererCommand** for sending commands to the renderer
+- Separate Engine and Renderer BepInEx plugins
+
+This is the proper way to handle IPC in Resonite's split architecture.
 
 ## What's Working
 
@@ -71,18 +78,25 @@ The BepInEx.Renderer package from Thunderstore only contains:
 
 ## Next Steps
 
-1. **Find the RML Mod DLL Source**
+1. **Refactor IPC to Use InterprocessLib** (HIGH PRIORITY)
+   - Replace static field IPC with InterprocessLib's `Messenger` class
+   - Use `Renderite.Shared.RendererCommand` for sending camera data to renderer
+   - Follow the pattern from [ResoniteSpout](https://github.com/Zozokasu/ResoniteSpout)
+   - Add InterprocessLib dependency to both Engine and Renderer projects
+
+2. **Restructure Projects**
+   - Split into separate projects:
+     - `Reso360Spout.Engine` - BepInEx plugin for main process (using BepisResoniteWrapper)
+     - `Reso360Spout.Renderer` - BepInEx plugin for renderer process
+     - `Reso360Spout.Shared` - Shared command classes (extending RendererCommand)
+   - Update build configuration to match ResoniteSpout's structure
+
+3. **Find the RML Mod DLL Source**
    - Check if BepisLoader provides it
    - Check if there's a separate repository for the RML mod component
    - Check Thunderstore package structure more carefully
 
-2. **Alternative: Create RML Mod**
-   - If the RML mod DLL doesn't exist, we may need to create a simple RML mod that:
-     - Sets up BepInEx in the Renderer process
-     - Ensures `winhttp.dll` is in place
-     - Initializes BepInEx on Renderer startup
-
-3. **Test Once RML Mod DLL is Found**
+4. **Test Once Complete**
    - Install the RML mod DLL in `rml_mods\`
    - Restart Resonite
    - Check `Renderer\BepInEx\LogOutput.log` for BepInEx initialization
@@ -91,9 +105,11 @@ The BepInEx.Renderer package from Thunderstore only contains:
 ## Technical Details
 
 ### Architecture
-- **Main Process**: FrooxEngine (.NET 9) - Runs `Reso360Spout.dll` via RML
+- **Main Process**: FrooxEngine (.NET 9) - Runs `Reso360Spout.dll` via RML/BepInEx
 - **Renderer Process**: Unity (2019.4.19f1) - Runs `Reso360Spout.dll` via BepInEx bootstrap
-- **IPC**: Static fields in `SharedCameraData` class (accessed from both processes)
+- **IPC**: Currently using static fields in `SharedCameraData` class (needs refactoring)
+  - **Should use**: InterprocessLib's `Messenger` + `Renderite.Shared.RendererCommand`
+  - **Reference**: See [ResoniteSpout](https://github.com/Zozokasu/ResoniteSpout) for proper implementation
 
 ### Build Requirements
 - .NET 10.0 SDK
@@ -117,6 +133,10 @@ The BepInEx.Renderer package from Thunderstore only contains:
 - [BepInEx.Renderer GitHub](https://github.com/ResoniteModding/BepInEx.Renderer)
 - [BepisLoader on Thunderstore](https://thunderstore.io/c/resonite/p/ResoniteModding/BepisLoader/)
 - [Resonite Modding Wiki](https://modding.resonite.net/)
+- **[ResoniteSpout](https://github.com/Zozokasu/ResoniteSpout)** - Working reference implementation for Spout mods in Resonite
+  - Shows proper IPC using InterprocessLib
+  - Shows proper project structure for Engine/Renderer split
+  - Uses Renderite.Shared.RendererCommand for IPC
 
 ## Notes
 
