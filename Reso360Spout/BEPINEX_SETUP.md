@@ -18,6 +18,14 @@ You need to install these mods from Thunderstore (or manually):
    - This is what injects into the Renderer process
    - Place in `rml_mods` folder (it will set up the Renderer\BepInEx structure automatically)
 
+3. **InterprocessLib** - Required for IPC between main and renderer processes
+   - **Main process**: Install `InterprocessLib.BepisLoader` from Thunderstore
+     - Place in `rml_mods` folder (or wherever BepisLoader plugins go)
+   - **Renderer process**: Install `InterprocessLib.BepInEx` from Thunderstore
+     - Place in `Renderer\BepInEx\plugins\` folder
+   - These enable the Messenger system for inter-process communication
+   - Without these, the mod will fall back to static field IPC (less reliable)
+
 ## Installation Steps
 
 1. **Install BepInEx dependencies:**

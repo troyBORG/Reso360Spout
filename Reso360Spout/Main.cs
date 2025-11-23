@@ -88,7 +88,7 @@ namespace Reso360Spout
                     _messenger = messenger;
                     
                     var receiveMethod = messengerType.GetMethod("ReceiveObject", new[] { typeof(string), typeof(Action<Reso360Spout.Shared.CameraCommand>) });
-                    if (receiveMethod != null)
+                    if (receiveMethod != null && messenger != null)
                     {
                         receiveMethod.Invoke(messenger, new object[] { "CameraCommand", new Action<Reso360Spout.Shared.CameraCommand>((command) =>
                         {
@@ -97,10 +97,14 @@ namespace Reso360Spout
                     }
                     Debug.Log("[Reso360Spout] InterprocessLib Messenger initialized in Renderer");
                 }
+                else
+                {
+                    Debug.LogWarning("[Reso360Spout] InterprocessLib not found - falling back to static fields. Install InterprocessLib.BepInEx in the renderer process.");
+                }
             }
             catch (Exception e)
             {
-                Debug.LogError($"[Reso360Spout] Failed to initialize Messenger: {e}");
+                Debug.LogWarning($"[Reso360Spout] Failed to initialize Messenger (this is OK if InterprocessLib is not installed): {e.Message}");
                 // Fall back to static fields if Messenger fails
             }
 
@@ -351,6 +355,8 @@ namespace Reso360Spout
         // Process camera commands received via IPC
         private void ProcessCameraCommand(Reso360Spout.Shared.CameraCommand command)
         {
+            if (command == null) return;
+            
             switch (command.Type)
             {
                 case Reso360Spout.Shared.CameraCommandType.UpdateTransform:
@@ -364,6 +370,24 @@ namespace Reso360Spout
                 case Reso360Spout.Shared.CameraCommandType.Shutdown:
                     Debug.Log("[Reso360Spout] Received Shutdown command from main process");
                     break;
+            }
+        }
+        
+        private void OnDestroy()
+        {
+            // Cleanup Messenger if needed
+            if (_messenger != null)
+            {
+                try
+                {
+                    var disposeMethod = _messenger.GetType().GetMethod("Dispose");
+                    disposeMethod?.Invoke(_messenger, null);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning($"[Reso360Spout] Error disposing Messenger: {e.Message}");
+                }
+                _messenger = null;
             }
         }
     }
@@ -441,10 +465,14 @@ namespace Reso360Spout
                     _messenger = messenger;
                     Msg("[Reso360Spout] InterprocessLib Messenger initialized");
                 }
+                else
+                {
+                    Msg("[Reso360Spout] InterprocessLib not found - falling back to static fields. Install InterprocessLib.BepisLoader in the main process.");
+                }
             }
             catch (Exception e)
             {
-                Msg($"[Reso360Spout] Failed to initialize Messenger: {e}");
+                Msg($"[Reso360Spout] Failed to initialize Messenger (this is OK if InterprocessLib is not installed): {e.Message}");
                 // Fall back to static fields if Messenger fails
             }
 
@@ -454,8 +482,11 @@ namespace Reso360Spout
 
             // Config
             Config = GetConfiguration();
-            Config.OnThisConfigurationChanged += OnConfigChanged;
-            Config.Save();
+            if (Config != null)
+            {
+                Config.OnThisConfigurationChanged += OnConfigChanged;
+                Config.Save();
+            }
 
             // カメラ座標等の初期値
             SharedCameraData.Origin = Vector3.zero;
@@ -538,13 +569,10 @@ namespace Reso360Spout
                                 var sendMethod = _messenger.GetType().GetMethod("SendObject", new[] { typeof(string), typeof(object) });
                                 sendMethod?.Invoke(_messenger, new object[] { "CameraCommand", command });
                             }
-                            catch (Exception e)
+                            catch (Exception)
                             {
-                                // Log but don't fail if Messenger has issues
-                                if (SharedCameraData.IsDirty) // Only log once per update
-                                {
-                                    // Silent fallback to static fields
-                                }
+                                // Silent fallback to static fields if Messenger has issues
+                                // This is expected if InterprocessLib is not installed
                             }
                         }
                     }

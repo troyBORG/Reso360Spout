@@ -63,7 +63,7 @@ namespace Reso360Spout
         [DllImport("KlakSpout", EntryPoint = "GetSharedObjectName")]
         internal static extern System.IntPtr GetSharedObjectName(int index);
 
-        internal static string GetSharedObjectNameString(int index)
+        internal static string? GetSharedObjectNameString(int index)
         {
             var ptr = GetSharedObjectName(index);
             return ptr != System.IntPtr.Zero ? Marshal.PtrToStringAnsi(ptr) : null;
