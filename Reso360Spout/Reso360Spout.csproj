@@ -7,6 +7,11 @@
     <AssemblyName>Reso360Spout</AssemblyName>
     <RootNamespace>Reso360Spout</RootNamespace>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <Deterministic>true</Deterministic>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
@@ -69,14 +74,37 @@
       <Private>False</Private>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <!-- InterprocessLib for IPC (Main Process) - Optional, loaded at runtime via reflection -->
+    <Reference Include="InterProcessLib.FrooxEngine" Condition="Exists('$(ResonitePath)\BepInEx\Plugins\InterprocessLib.BepisLoader\InterprocessLib.FrooxEngine.dll')">
+      <HintPath>$(ResonitePath)\BepInEx\Plugins\InterprocessLib.BepisLoader\InterprocessLib.FrooxEngine.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="InterprocessLib.BepisLoader_Extensions.dll" Condition="Exists('$(ResonitePath)\BepInEx\Plugins\InterprocessLib.BepisLoader\InterprocessLib.BepisLoader_Extensions.dll')">
+      <HintPath>$(ResonitePath)\BepInEx\Plugins\InterprocessLib.BepisLoader\InterprocessLib.BepisLoader_Extensions.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <!-- InterprocessLib for IPC (Renderer Process) - Optional, loaded at runtime -->
+    <Reference Include="InterprocessLib.Unity" Condition="Exists('$(ResoniteRendererPath)\BepInEx\plugins\InterprocessLib.BepInEx\InterprocessLib.Unity.dll')">
+      <HintPath>$(ResoniteRendererPath)\BepInEx\plugins\InterprocessLib.BepInEx\InterprocessLib.Unity.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.cs" />
     <Compile Remove="Reso360SpoutBootstrap\**" />
+    <Compile Remove="Reso360Spout.Shared\**" />
+    <None Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Reso360SpoutBootstrap\**" />
+  </ItemGroup>
+  <!-- Explicitly include Shared files -->
+  <ItemGroup>
+    <Compile Include="Reso360Spout.Shared\CameraCommand.cs" />
   </ItemGroup>
 
   <PropertyGroup>

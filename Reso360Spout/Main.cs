@@ -5,6 +5,7 @@ using ResoniteModLoader;
 using System;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Reso360Spout.Shared;
 
 namespace Reso360Spout
 {
@@ -39,6 +40,13 @@ namespace Reso360Spout
         // --- Private Fields ------------------------------------------------
         private GameObject? _root;
         private GameObject? _cameraRoot;
+        private object? _messenger; // Use object to avoid type conflicts between InterprocessLib.Unity and InterprocessLib.FrooxEngine
+        private System.Collections.Concurrent.ConcurrentQueue<System.Action> _mainQueue = new();
+        
+        // Current camera transform (received via IPC)
+        private Vector3 _currentOrigin = Vector3.zero;
+        private Quaternion _currentRotation = Quaternion.identity;
+        private Vector3 _currentScale = Vector3.one;
 
         // --- Runtime Initialize (Runs in Renderer process) -----------------
         // This is called automatically when the DLL is loaded in the Renderer process
@@ -68,6 +76,34 @@ namespace Reso360Spout
         // --- MonoBehaviour Methods -----------------------------------------
         private void Start()
         {
+            // Initialize InterprocessLib Messenger for receiving commands
+            // Use reflection to avoid type conflicts between InterprocessLib.Unity and InterprocessLib.FrooxEngine
+            try
+            {
+                var messengerType = Type.GetType("InterprocessLib.Messenger, InterprocessLib.Unity") 
+                    ?? Type.GetType("InterprocessLib.Messenger, InterprocessLib.FrooxEngine");
+                if (messengerType != null)
+                {
+                    var messenger = Activator.CreateInstance(messengerType, "dev.kokoa.Reso360Spout", new[] { typeof(Reso360Spout.Shared.CameraCommand) });
+                    _messenger = messenger;
+                    
+                    var receiveMethod = messengerType.GetMethod("ReceiveObject", new[] { typeof(string), typeof(Action<Reso360Spout.Shared.CameraCommand>) });
+                    if (receiveMethod != null)
+                    {
+                        receiveMethod.Invoke(messenger, new object[] { "CameraCommand", new Action<Reso360Spout.Shared.CameraCommand>((command) =>
+                        {
+                            _mainQueue.Enqueue(() => ProcessCameraCommand(command));
+                        }) });
+                    }
+                    Debug.Log("[Reso360Spout] InterprocessLib Messenger initialized in Renderer");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[Reso360Spout] Failed to initialize Messenger: {e}");
+                // Fall back to static fields if Messenger fails
+            }
+
             LoadShadersFromAssetBundle();
 
             // ルートオブジェクトの参照
@@ -107,12 +143,31 @@ namespace Reso360Spout
         {
             try
             {
-                // カメラのトランスフォームを毎フレーム更新（SharedCameraDataから取得）
+                // Process queued commands from main process
+                while (_mainQueue.TryDequeue(out var action))
+                {
+                    try { action(); }
+                    catch (Exception e) { Debug.LogError($"[Reso360Spout] Error processing command: {e}"); }
+                }
+
+                // カメラのトランスフォームを毎フレーム更新
+                // Prefer IPC data, fall back to static fields for backward compatibility
                 if (_root != null)
                 {
-                    _root.transform.position = SharedCameraData.Origin;
-                    _root.transform.rotation = SharedCameraData.Rotation;
-                    _root.transform.localScale = SharedCameraData.Scale;
+                    // Use IPC data if available, otherwise fall back to static fields
+                    if (_messenger != null)
+                    {
+                        _root.transform.position = _currentOrigin;
+                        _root.transform.rotation = _currentRotation;
+                        _root.transform.localScale = _currentScale;
+                    }
+                    else
+                    {
+                        // Fallback to static fields
+                        _root.transform.position = SharedCameraData.Origin;
+                        _root.transform.rotation = SharedCameraData.Rotation;
+                        _root.transform.localScale = SharedCameraData.Scale;
+                    }
                 }
 
                 // プラグイン内部状態を更新
@@ -292,6 +347,25 @@ namespace Reso360Spout
             Graphics.ExecuteCommandBuffer(cmd);
             cmd.Release();
         }
+
+        // Process camera commands received via IPC
+        private void ProcessCameraCommand(Reso360Spout.Shared.CameraCommand command)
+        {
+            switch (command.Type)
+            {
+                case Reso360Spout.Shared.CameraCommandType.UpdateTransform:
+                    _currentOrigin = new Vector3(command.OriginX, command.OriginY, command.OriginZ);
+                    _currentRotation = new Quaternion(command.RotationX, command.RotationY, command.RotationZ, command.RotationW);
+                    _currentScale = new Vector3(command.ScaleX, command.ScaleY, command.ScaleZ);
+                    break;
+                case Reso360Spout.Shared.CameraCommandType.Initialize:
+                    Debug.Log("[Reso360Spout] Received Initialize command from main process");
+                    break;
+                case Reso360Spout.Shared.CameraCommandType.Shutdown:
+                    Debug.Log("[Reso360Spout] Received Shutdown command from main process");
+                    break;
+            }
+        }
     }
 
     // Main mod class - runs in main process
@@ -305,6 +379,7 @@ namespace Reso360Spout
 
         // --- Public Fields ------------------------------------------------
         public static ModConfiguration? Config;
+        public static object? _messenger; // Use object to avoid type conflicts
 
         // --- Config Keys --------------------------------------------------
         [AutoRegisterConfigKey]
@@ -356,6 +431,23 @@ namespace Reso360Spout
         // --- Methods (ResoniteMod) ----------------------------------------
         public override void OnEngineInit()
         {
+            // Initialize InterprocessLib Messenger for IPC (main process)
+            try
+            {
+                var messengerType = Type.GetType("InterprocessLib.Messenger, InterprocessLib.FrooxEngine");
+                if (messengerType != null)
+                {
+                    var messenger = Activator.CreateInstance(messengerType, "dev.kokoa.Reso360Spout", new[] { typeof(CameraCommand) });
+                    _messenger = messenger;
+                    Msg("[Reso360Spout] InterprocessLib Messenger initialized");
+                }
+            }
+            catch (Exception e)
+            {
+                Msg($"[Reso360Spout] Failed to initialize Messenger: {e}");
+                // Fall back to static fields if Messenger fails
+            }
+
             // Harmony パッチ
             Harmony harmony = new Harmony("dev.kokoa.Reso360Spout");
             harmony.PatchAll();
@@ -404,6 +496,7 @@ namespace Reso360Spout
                     var origin = __instance.WorldManager.FocusedWorld.RootSlot.FindChildInHierarchy(cameraSlotName);
                     if (origin != null)
                     {
+                        // Update static fields for backward compatibility
                         SharedCameraData.Origin.Set(
                             origin.GlobalPosition.x,
                             origin.GlobalPosition.y,
@@ -421,6 +514,39 @@ namespace Reso360Spout
                             origin.GlobalScale.z
                         );
                         SharedCameraData.IsDirty = true;
+
+                        // Send via InterprocessLib Messenger (preferred method)
+                        if (_messenger != null)
+                        {
+                            try
+                            {
+                                var command = new CameraCommand
+                                {
+                                    Type = CameraCommandType.UpdateTransform,
+                                    OriginX = origin.GlobalPosition.x,
+                                    OriginY = origin.GlobalPosition.y,
+                                    OriginZ = origin.GlobalPosition.z,
+                                    RotationX = origin.GlobalRotation.x,
+                                    RotationY = origin.GlobalRotation.y,
+                                    RotationZ = origin.GlobalRotation.z,
+                                    RotationW = origin.GlobalRotation.w,
+                                    ScaleX = origin.GlobalScale.x,
+                                    ScaleY = origin.GlobalScale.y,
+                                    ScaleZ = origin.GlobalScale.z
+                                };
+                                // Use reflection to call SendObject
+                                var sendMethod = _messenger.GetType().GetMethod("SendObject", new[] { typeof(string), typeof(object) });
+                                sendMethod?.Invoke(_messenger, new object[] { "CameraCommand", command });
+                            }
+                            catch (Exception e)
+                            {
+                                // Log but don't fail if Messenger has issues
+                                if (SharedCameraData.IsDirty) // Only log once per update
+                                {
+                                    // Silent fallback to static fields
+                                }
+                            }
+                        }
                     }
                 });
             }

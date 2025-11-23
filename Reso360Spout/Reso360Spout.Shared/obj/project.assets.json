@@ -1,0 +1,227 @@
+{
+  "version": 3,
+  "targets": {
+    "net9.0": {
+      "Resonite.GameLibs/2025.11.21.1164": {
+        "type": "package",
+        "compile": {
+          "ref/net9.0/Assembly-CSharp.dll": {},
+          "ref/net9.0/Awwdio.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/CodeGenerationConfig.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/ColorLUT.dll": {},
+          "ref/net9.0/Elements.Assets.dll": {
+            "related": ".pdb;.xml"
+          },
+          "ref/net9.0/Elements.Core.dll": {
+            "related": ".pdb;.xml"
+          },
+          "ref/net9.0/Elements.Data.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/Elements.Quantity.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/FrooxEngine.Commands.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/FrooxEngine.GraphicalClient.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/FrooxEngine.Store.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/FrooxEngine.Weaver.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/FrooxEngine.dll": {
+            "related": ".Commands.pdb;.GraphicalClient.pdb;.pdb;.Store.pdb;.Weaver.pdb;.xml"
+          },
+          "ref/net9.0/PhotonDust.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/ProtoFlux.Core.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/ProtoFlux.Nodes.Core.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/ProtoFlux.Nodes.FrooxEngine.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/ProtoFluxBindings.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/Renderite.Host.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/Renderite.Shared.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/Renderite.Unity.dll": {},
+          "ref/net9.0/Resonite.dll": {
+            "related": ".pdb"
+          },
+          "ref/net9.0/SkyFrost.Base.Models.dll": {
+            "related": ".pdb;.xml"
+          },
+          "ref/net9.0/SkyFrost.Base.dll": {
+            "related": ".Models.pdb;.Models.xml;.pdb;.xml"
+          },
+          "ref/net9.0/YellowDogMan.Cloudtoid.Framework.dll": {},
+          "ref/net9.0/YellowDogMan.Cloudtoid.Interprocess.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Resonite.GameLibs/2025.11.21.1164": {
+      "sha512": "1V7KMexWJsr7DUIDOqEuqbex4AB2lTeT80NnzZiv/gTt/uQYKGdFfCcloO8zOqf9UAtPKl4lvJFzXESR01s0lQ==",
+      "type": "package",
+      "path": "resonite.gamelibs/2025.11.21.1164",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "ref/net9.0/Assembly-CSharp.dll",
+        "ref/net9.0/Awwdio.dll",
+        "ref/net9.0/Awwdio.pdb",
+        "ref/net9.0/CodeGenerationConfig.dll",
+        "ref/net9.0/CodeGenerationConfig.pdb",
+        "ref/net9.0/ColorLUT.dll",
+        "ref/net9.0/Elements.Assets.dll",
+        "ref/net9.0/Elements.Assets.pdb",
+        "ref/net9.0/Elements.Assets.xml",
+        "ref/net9.0/Elements.Core.dll",
+        "ref/net9.0/Elements.Core.pdb",
+        "ref/net9.0/Elements.Core.xml",
+        "ref/net9.0/Elements.Data.dll",
+        "ref/net9.0/Elements.Data.pdb",
+        "ref/net9.0/Elements.Quantity.dll",
+        "ref/net9.0/Elements.Quantity.pdb",
+        "ref/net9.0/FrooxEngine.Commands.dll",
+        "ref/net9.0/FrooxEngine.Commands.pdb",
+        "ref/net9.0/FrooxEngine.GraphicalClient.dll",
+        "ref/net9.0/FrooxEngine.GraphicalClient.pdb",
+        "ref/net9.0/FrooxEngine.Store.dll",
+        "ref/net9.0/FrooxEngine.Store.pdb",
+        "ref/net9.0/FrooxEngine.Weaver.dll",
+        "ref/net9.0/FrooxEngine.Weaver.pdb",
+        "ref/net9.0/FrooxEngine.dll",
+        "ref/net9.0/FrooxEngine.pdb",
+        "ref/net9.0/FrooxEngine.xml",
+        "ref/net9.0/PhotonDust.dll",
+        "ref/net9.0/PhotonDust.pdb",
+        "ref/net9.0/ProtoFlux.Core.dll",
+        "ref/net9.0/ProtoFlux.Core.pdb",
+        "ref/net9.0/ProtoFlux.Nodes.Core.dll",
+        "ref/net9.0/ProtoFlux.Nodes.Core.pdb",
+        "ref/net9.0/ProtoFlux.Nodes.FrooxEngine.dll",
+        "ref/net9.0/ProtoFlux.Nodes.FrooxEngine.pdb",
+        "ref/net9.0/ProtoFluxBindings.dll",
+        "ref/net9.0/ProtoFluxBindings.pdb",
+        "ref/net9.0/Renderite.Host.dll",
+        "ref/net9.0/Renderite.Host.pdb",
+        "ref/net9.0/Renderite.Shared.dll",
+        "ref/net9.0/Renderite.Shared.pdb",
+        "ref/net9.0/Renderite.Unity.dll",
+        "ref/net9.0/Resonite.dll",
+        "ref/net9.0/Resonite.pdb",
+        "ref/net9.0/SkyFrost.Base.Models.dll",
+        "ref/net9.0/SkyFrost.Base.Models.pdb",
+        "ref/net9.0/SkyFrost.Base.Models.xml",
+        "ref/net9.0/SkyFrost.Base.dll",
+        "ref/net9.0/SkyFrost.Base.pdb",
+        "ref/net9.0/SkyFrost.Base.xml",
+        "ref/net9.0/YellowDogMan.Cloudtoid.Framework.dll",
+        "ref/net9.0/YellowDogMan.Cloudtoid.Interprocess.dll",
+        "resonite.gamelibs.2025.11.21.1164.nupkg.sha512",
+        "resonite.gamelibs.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net9.0": [
+      "Resonite.GameLibs >= 2025.*"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\troyB\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "T:\\git\\Resonite Mods\\Reso360Spout\\Reso360Spout\\Reso360Spout.Shared\\Reso360Spout.Shared.csproj",
+      "projectName": "Reso360Spout.Shared",
+      "projectPath": "T:\\git\\Resonite Mods\\Reso360Spout\\Reso360Spout\\Reso360Spout.Shared\\Reso360Spout.Shared.csproj",
+      "packagesPath": "C:\\Users\\troyB\\.nuget\\packages\\",
+      "outputPath": "T:\\git\\Resonite Mods\\Reso360Spout\\Reso360Spout\\Reso360Spout.Shared\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\troyB\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net9.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "10.0.100"
+    },
+    "frameworks": {
+      "net9.0": {
+        "targetAlias": "net9.0",
+        "dependencies": {
+          "Resonite.GameLibs": {
+            "suppressParent": "All",
+            "target": "Package",
+            "version": "[2025.*, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "c:\\program files\\dotnet\\sdk\\10.0.100/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

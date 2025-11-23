@@ -1,0 +1,13 @@
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\bin\Debug\net9.0\Reso360Spout.Shared.deps.json
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\bin\Debug\net9.0\Reso360Spout.Shared.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\bin\Debug\net9.0\Reso360Spout.Shared.pdb
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.csproj.AssemblyReference.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.GeneratedMSBuildEditorConfig.editorconfig
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.AssemblyInfoInputs.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.AssemblyInfo.cs
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.csproj.CoreCompileInputs.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.sourcelink.json
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\refint\Reso360Spout.Shared.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\Reso360Spout.Shared.pdb
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360Spout.Shared\obj\Debug\net9.0\ref\Reso360Spout.Shared.dll
