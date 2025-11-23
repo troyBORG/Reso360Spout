@@ -1,0 +1,85 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Reso360SpoutBootstrap</AssemblyName>
+    <RootNamespace>Reso360Spout</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Thunderstore Mod Manager profile path (if using Thunderstore) -->
+    <ThunderstoreProfilePath Condition="'$(ThunderstoreProfilePath)' == ''">C:\Users\troyB\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Resonite\profiles\Default</ThunderstoreProfilePath>
+    <!-- Determine BepInEx path - check Thunderstore profile first, then game directory -->
+    <BepInExCorePath Condition="Exists('$(ThunderstoreProfilePath)\Renderer\BepInEx\core\BepInEx.dll')">$(ThunderstoreProfilePath)\Renderer\BepInEx\core</BepInExCorePath>
+    <BepInExCorePath Condition="'$(BepInExCorePath)' == ''">$(ResoniteRendererPath)\BepInEx\core</BepInExCorePath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- BepInEx references - check Thunderstore profile first, then game directory -->
+    <Reference Include="BepInEx">
+      <HintPath>$(BepInExCorePath)\BepInEx.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="BepInEx.Preloader">
+      <HintPath>$(BepInExCorePath)\BepInEx.Preloader.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    
+    <!-- Unity references - from Renderer process -->
+    <Reference Include="UnityEngine">
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <!-- Set ResoniteRendererPath to your Resonite Renderer directory -->
+    <!-- You can set this via: dotnet build /p:ResoniteRendererPath="C:\Path\To\Resonite\Renderer" -->
+    <!-- Or set it as an environment variable, or edit this file directly -->
+    <ResoniteRendererPath Condition="'$(ResoniteRendererPath)' == ''">G:\SteamLibrary\steamapps\common\Resonite\Renderer</ResoniteRendererPath>
+    <!-- Thunderstore Mod Manager profile path (if using Thunderstore) -->
+    <ThunderstoreProfilePath Condition="'$(ThunderstoreProfilePath)' == ''">C:\Users\troyB\AppData\Roaming\Thunderstore Mod Manager\DataFolder\Resonite\profiles\Default</ThunderstoreProfilePath>
+  </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      <!-- Try Thunderstore profile path first, then fall back to game directory -->
+      <BepInExPluginsPath Condition="'$(BepInExPluginsPath)' == '' And Exists('$(ThunderstoreProfilePath)\Renderer\BepInEx\core\BepInEx.dll')">$(ThunderstoreProfilePath)\Renderer\BepInEx\plugins</BepInExPluginsPath>
+      <BepInExPluginsPath Condition="'$(BepInExPluginsPath)' == ''">$(ResoniteRendererPath)\BepInEx\plugins</BepInExPluginsPath>
+    </PropertyGroup>
+    <!-- Create plugins directory if it doesn't exist -->
+    <MakeDir Directories="$(BepInExPluginsPath)" Condition="!Exists('$(BepInExPluginsPath)')" />
+    <!-- Copy the plugin to BepInEx plugins folder -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(BepInExPluginsPath)" />
+    <Message Text="Copied Reso360SpoutBootstrap.dll to $(BepInExPluginsPath)" Importance="high" />
+  </Target>
+</Project>
+

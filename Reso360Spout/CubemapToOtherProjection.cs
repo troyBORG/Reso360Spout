@@ -27,7 +27,7 @@ public enum FishEyeType
 [RequireComponent(typeof(Camera))]
 public class CubemapToOtherProjection : MonoBehaviour
 {
-    public RenderTexture RenderTarget;
+    public RenderTexture? RenderTarget;
     public int CubemapSize = 1024;
     public ProjectionType ProjectionType = ProjectionType.Equirectangular_360;
     public FishEyeType FishEyeType = FishEyeType.Equidistance;
@@ -37,14 +37,20 @@ public class CubemapToOtherProjection : MonoBehaviour
     public float StereoSeparation = 0.065f;
     public bool CorrectCameraPositionInStereoRendering = false;
 
-    private Camera _camera;
-    private Material _material;
-    private RenderTexture _cubemap;
-    private CubemapRenderer _cubemapRenderer;
+    private Camera? _camera;
+    private Material? _material;
+    private RenderTexture? _cubemap;
+    private CubemapRenderer? _cubemapRenderer;
 
     void Start()
     {
         _camera = GetComponent<Camera>();
+
+        if (UnityEntry.cubemapShader == null)
+        {
+            Debug.LogError("[Reso360Spout] Cubemap shader not loaded. Make sure the AssetBundle is loaded.");
+            return;
+        }
 
         _material = new Material(UnityEntry.cubemapShader);
         Main.Msg(_material);
@@ -73,97 +79,103 @@ public class CubemapToOtherProjection : MonoBehaviour
 
     void InternalUpdate()
     {
-        if (RenderTarget == null)
+        if (RenderTarget == null || _camera == null || _material == null)
         {
             return;
         }
 
-        switch (ProjectionType)
+        if (_material != null)
         {
-            case ProjectionType.Equirectangular_360:
-                {
-                    SetUVScaleOffset(Mathf.PI * 2.0f, Mathf.PI, 0.0f, 0.0f);
-                    SetEnableProjFishEye(false);
-                    SetEnableEquiSolidAngle(false);
-                    SetEnableOrthogal(false);
-                }
-                break;
-
-            case ProjectionType.Equirectangular_180:
-                {
-                    SetUVScaleOffset(Mathf.PI, Mathf.PI, Mathf.PI * 0.5f, 0.0f);
-                    SetEnableProjFishEye(false);
-                    SetEnableEquiSolidAngle(false);
-                    SetEnableOrthogal(false);
-                }
-                break;
-
-            case ProjectionType.FishEye_Circumference:
-                {
-                    SetUVScaleOffset(2.0f, 2.0f, -1.0f, -1.0f);
-                    SetEnableProjFishEye(true);
-                    SetFishEyeDiameterScale(1.0f);
-                }
-                break;
-
-            case ProjectionType.FishEye_Diagonal:
-                {
-                    SetUVScaleOffset(2.0f, 2.0f, -1.0f, -1.0f);
-                    SetEnableProjFishEye(true);
-                    SetFishEyeDiameterScale(1.0f / Mathf.Sqrt(2));
-                }
-                break;
-        }
-
-        switch (FishEyeType)
-        {
-            case FishEyeType.Equidistance:
-                {
-                    SetEnableEquiSolidAngle(false);
-                    SetEnableOrthogal(false);
-                }
-                break;
-
-            case FishEyeType.EquisolidAngle:
-                {
-                    SetEnableEquiSolidAngle(true);
-                    SetEnableOrthogal(false);
-                }
-                break;
-
-            case FishEyeType.Orthogonal:
-                {
-                    SetEnableEquiSolidAngle(false);
-                    SetEnableOrthogal(true);
-                }
-                break;
-        }
-
-
-        if (RenderInStereo)
-        {
-            var tmpStereoSepration = _camera.stereoSeparation;
-            var tmpStereoTargetEye = _camera.stereoTargetEye;
-            _camera.stereoSeparation = StereoSeparation;
-            _camera.stereoTargetEye = StereoTargetEyeMask.None;
-
-            if (ProjectionType == ProjectionType.Equirectangular_360)
+            switch (ProjectionType)
             {
-                RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Left, 1.0f, 0.5f, 0.0f, -0.5f);
-                RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Right, 1.0f, 0.5f, 0.0f, 0.5f);
+                case ProjectionType.Equirectangular_360:
+                    {
+                        SetUVScaleOffset(Mathf.PI * 2.0f, Mathf.PI, 0.0f, 0.0f);
+                        SetEnableProjFishEye(false);
+                        SetEnableEquiSolidAngle(false);
+                        SetEnableOrthogal(false);
+                    }
+                    break;
+
+                case ProjectionType.Equirectangular_180:
+                    {
+                        SetUVScaleOffset(Mathf.PI, Mathf.PI, Mathf.PI * 0.5f, 0.0f);
+                        SetEnableProjFishEye(false);
+                        SetEnableEquiSolidAngle(false);
+                        SetEnableOrthogal(false);
+                    }
+                    break;
+
+                case ProjectionType.FishEye_Circumference:
+                    {
+                        SetUVScaleOffset(2.0f, 2.0f, -1.0f, -1.0f);
+                        SetEnableProjFishEye(true);
+                        SetFishEyeDiameterScale(1.0f);
+                    }
+                    break;
+
+                case ProjectionType.FishEye_Diagonal:
+                    {
+                        SetUVScaleOffset(2.0f, 2.0f, -1.0f, -1.0f);
+                        SetEnableProjFishEye(true);
+                        SetFishEyeDiameterScale(1.0f / Mathf.Sqrt(2));
+                    }
+                    break;
+            }
+
+            switch (FishEyeType)
+            {
+                case FishEyeType.Equidistance:
+                    {
+                        SetEnableEquiSolidAngle(false);
+                        SetEnableOrthogal(false);
+                    }
+                    break;
+
+                case FishEyeType.EquisolidAngle:
+                    {
+                        SetEnableEquiSolidAngle(true);
+                        SetEnableOrthogal(false);
+                    }
+                    break;
+
+                case FishEyeType.Orthogonal:
+                    {
+                        SetEnableEquiSolidAngle(false);
+                        SetEnableOrthogal(true);
+                    }
+                    break;
+            }
+        }
+
+
+        if (_camera != null)
+        {
+            if (RenderInStereo)
+            {
+                var tmpStereoSepration = _camera.stereoSeparation;
+                var tmpStereoTargetEye = _camera.stereoTargetEye;
+                _camera.stereoSeparation = StereoSeparation;
+                _camera.stereoTargetEye = StereoTargetEyeMask.None;
+
+                if (ProjectionType == ProjectionType.Equirectangular_360)
+                {
+                    RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Left, 1.0f, 0.5f, 0.0f, -0.5f);
+                    RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Right, 1.0f, 0.5f, 0.0f, 0.5f);
+                }
+                else
+                {
+                    RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Left, 0.5f, 1.0f, -0.5f, 0.0f);
+                    RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Right, 0.5f, 1.0f, 0.5f, 0.0f);
+                }
+
+                _camera.stereoSeparation = tmpStereoSepration;
+                _camera.stereoTargetEye = tmpStereoTargetEye;
             }
             else
             {
-                RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Left, 0.5f, 1.0f, -0.5f, 0.0f);
-                RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Right, 0.5f, 1.0f, 0.5f, 0.0f);
+                RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Mono, 1.0f, 1.0f, 0.0f, 0.0f);
             }
-
-            _camera.stereoSeparation = tmpStereoSepration;
-            _camera.stereoTargetEye = tmpStereoTargetEye;
-        }
-        else
-        {
-            RenderToPanoramaView(ProjectionType, Camera.MonoOrStereoscopicEye.Mono, 1.0f, 1.0f, 0.0f, 0.0f);
         }
     }
 
@@ -190,6 +202,9 @@ public class CubemapToOtherProjection : MonoBehaviour
 
     private void RenderToPanoramaView(ProjectionType projectionType, Camera.MonoOrStereoscopicEye eye, float scaleX, float scaleY, float offsetX, float offsetY)
     {
+        if (_camera == null || _material == null || _cubemap == null)
+            return;
+
         if (UseUnityInternalCubemapRenderer)
         {
             switch (GammaConvertType)
@@ -248,18 +263,24 @@ public class CubemapToOtherProjection : MonoBehaviour
                     }
                     break;
             }
-            _cubemapRenderer.RenderCubemap(
-                _camera,
-                projectionType == ProjectionType.Equirectangular_360 ? 63 : 63 - (1 << (int)CubemapFace.NegativeZ),
-                ipdOffset,
-                GammaConvertType,
-                CorrectCameraPositionInStereoRendering);
+            if (_cubemapRenderer != null)
+            {
+                _cubemapRenderer.RenderCubemap(
+                    _camera,
+                    projectionType == ProjectionType.Equirectangular_360 ? 63 : 63 - (1 << (int)CubemapFace.NegativeZ),
+                    ipdOffset,
+                    GammaConvertType,
+                    CorrectCameraPositionInStereoRendering);
 
-            SetPositionScaleOffset(scaleX, scaleY, offsetX, offsetY);
-            _material.SetMatrix("_Matrix", Matrix4x4.identity);
-            SetEnableLinearToSRGB(false);
-            SetEnableLinearToBT709(false);
-            Graphics.Blit(_cubemapRenderer.Cubemap, RenderTarget, _material);
+                SetPositionScaleOffset(scaleX, scaleY, offsetX, offsetY);
+                _material.SetMatrix("_Matrix", Matrix4x4.identity);
+                SetEnableLinearToSRGB(false);
+                SetEnableLinearToBT709(false);
+                if (_cubemapRenderer.Cubemap != null && RenderTarget != null)
+                {
+                    Graphics.Blit(_cubemapRenderer.Cubemap, RenderTarget, _material);
+                }
+            }
         }
     }
 
@@ -291,22 +312,33 @@ public class CubemapToOtherProjection : MonoBehaviour
 
     private void SetPositionScaleOffset(float scaleX, float scaleY, float offsetX, float offsetY)
     {
-        _material.SetVector("_PositionScaleOffset", new Vector4(scaleX, scaleY, offsetX, offsetY));
+        if (_material != null)
+        {
+            _material.SetVector("_PositionScaleOffset", new Vector4(scaleX, scaleY, offsetX, offsetY));
+        }
     }
 
     private void SetUVScaleOffset(float scaleX, float scaleY, float offsetX, float offsetY)
     {
-        _material.SetVector("_UVScaleOffset", new Vector4(scaleX, scaleY, offsetX, offsetY));
+        if (_material != null)
+        {
+            _material.SetVector("_UVScaleOffset", new Vector4(scaleX, scaleY, offsetX, offsetY));
+        }
     }
 
     private void SetFishEyeDiameterScale(float scale)
     {
-        _material.SetFloat("_FishEyeDiameterScale", scale);
+        if (_material != null)
+        {
+            _material.SetFloat("_FishEyeDiameterScale", scale);
+        }
     }
 
 
     private void SetEnableKeyword(string keyword, bool flag)
     {
+        if (_material == null) return;
+
         if (flag)
         {
             _material.EnableKeyword(keyword);

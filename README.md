@@ -34,12 +34,22 @@ You can capture videos like [this one](https://deovr.com/voqxc9).
 
 ## Installation
 
+**Important**: This mod requires the splittening update and BepInEx.Renderer to work.
+
 1. Install the Resonite Mod Loader.
-2. Download the [latest release](https://github.com/rassi0429/Reso360Spout/releases/latest) and place all of the following files into your `rml_mods` folder:
-   - `cubeto360`
-   - `KlakSpout.dll`
-   - `Reso360Spout.dll`
-3. Install the [Spout plugin for OBS](https://github.com/Off-World-Live/obs-spout2-plugin).
+2. Install **BepInEx.Renderer** from Thunderstore:
+   - [BepisLoader](https://thunderstore.io/c/resonite/p/ResoniteModding/BepisLoader/)
+   - [BepInEx.Renderer](https://thunderstore.io/c/resonite/p/ResoniteModding/BepInExRenderer/)
+3. Build the mod (see BUILD_INSTRUCTIONS.md) or download the [latest release](https://github.com/rassi0429/Reso360Spout/releases/latest)
+4. Copy files to the following locations:
+   - `Reso360Spout.dll` → `rml_mods\` (main process) - **built by project, auto-copied**
+   - `Reso360Spout.dll` → `Renderer\Renderite.Renderer_Data\Managed\` (renderer process) - **built by project, auto-copied**
+   - `Reso360SpoutBootstrap.dll` → `Renderer\BepInEx\plugins\` (BepInEx plugin) - **built by project, auto-copied**
+   - `KlakSpout.dll` → `Renderer\Renderite.Renderer_Data\Plugins\x86_64\` - **included in repo, auto-copied during build**
+   - `cubeto360` → `rml_mods\` - **external dependency, copy from original release**
+5. Install the [Spout plugin for OBS](https://github.com/Off-World-Live/obs-spout2-plugin).
+
+For detailed installation instructions, see [INSTALLATION.md](Reso360Spout/INSTALLATION.md).
 
 ## OBS Setup
 

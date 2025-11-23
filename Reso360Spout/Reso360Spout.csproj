@@ -1,83 +1,105 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7F86E667-FCC5-42DC-A2B3-249959900C44}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Reso360Spout</RootNamespace>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>Reso360Spout</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Reso360Spout</RootNamespace>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <Deterministic>true</Deterministic>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-  </PropertyGroup>
+
   <ItemGroup>
     <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\rml_libs\0Harmony.dll</HintPath>
+      <HintPath>$(ResonitePath)\rml_libs\0Harmony.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Elements.Core">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\Elements.Core.dll</HintPath>
+      <HintPath>$(ResonitePath)\Elements.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="FrooxEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\FrooxEngine.dll</HintPath>
+      <HintPath>$(ResonitePath)\FrooxEngine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="netstandard" />
     <Reference Include="ResoniteModLoader">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Libraries\ResoniteModLoader.dll</HintPath>
+      <HintPath>$(ResonitePath)\Libraries\ResoniteModLoader.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="ResoniteModSettings">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods\ResoniteModSettings.dll</HintPath>
+      <HintPath>$(ResonitePath)\rml_mods\ResoniteModSettings.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <!-- Unity references - these are only available in the Renderer process -->
+    <!-- We mark them as optional so the mod can load in the main process -->
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\UnityEngine.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="UnityEngine.AssetBundleModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\..\..\Program Files (x86)\Steam\steamapps\common\Resonite\Resonite_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Renderite.Shared">
+      <HintPath>$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed\Renderite.Shared.dll</HintPath>
+      <Private>False</Private>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="CubemapRenderer.cs" />
-    <Compile Include="CubemapToOtherProjection.cs" />
-    <Compile Include="Main.cs" />
-    <Compile Include="PluginEntry.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpoutUtil.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Reso360SpoutBootstrap\**" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Remove="Reso360SpoutBootstrap\**" />
+  </ItemGroup>
+
   <PropertyGroup>
-    <PostBuildEvent>copy "$(TargetDir)\$(TargetFileName)" "C:\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods\"</PostBuildEvent>
+    <!-- Set ResonitePath to your Resonite installation directory -->
+    <!-- You can set this via: dotnet build /p:ResonitePath="C:\Path\To\Resonite" -->
+    <!-- Or set it as an environment variable, or edit this file directly -->
+    <ResonitePath Condition="'$(ResonitePath)' == ''">G:\SteamLibrary\steamapps\common\Resonite</ResonitePath>
+    <ResoniteRendererPath Condition="'$(ResoniteRendererPath)' == ''">G:\SteamLibrary\steamapps\common\Resonite\Renderer</ResoniteRendererPath>
   </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <PropertyGroup>
+      <ModOutputPath Condition="'$(ModOutputPath)' == ''">$(ResonitePath)\rml_mods</ModOutputPath>
+      <RendererManagedPath Condition="'$(RendererManagedPath)' == ''">$(ResoniteRendererPath)\Renderite.Renderer_Data\Managed</RendererManagedPath>
+      <RendererPluginsPath Condition="'$(RendererPluginsPath)' == ''">$(ResoniteRendererPath)\Renderite.Renderer_Data\Plugins\x86_64</RendererPluginsPath>
+    </PropertyGroup>
+    <!-- Copy to rml_mods for main process -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModOutputPath)" />
+    <!-- Copy to Renderer Managed folder for renderer process -->
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RendererManagedPath)" />
+    <!-- Copy KlakSpout.dll to Renderer Plugins folder if it exists -->
+    <Copy SourceFiles="$(ProjectDir)KlakSpout.dll" 
+          DestinationFolder="$(RendererPluginsPath)" 
+          Condition="Exists('$(ProjectDir)KlakSpout.dll')" />
+  </Target>
 </Project>

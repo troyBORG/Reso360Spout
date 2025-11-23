@@ -1,0 +1,13 @@
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.csproj.AssemblyReference.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.GeneratedMSBuildEditorConfig.editorconfig
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.AssemblyInfoInputs.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.AssemblyInfo.cs
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.csproj.CoreCompileInputs.cache
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.sourcelink.json
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\bin\Debug\net10.0\Reso360SpoutBootstrap.deps.json
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\bin\Debug\net10.0\Reso360SpoutBootstrap.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\bin\Debug\net10.0\Reso360SpoutBootstrap.pdb
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\refint\Reso360SpoutBootstrap.dll
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\Reso360SpoutBootstrap.pdb
+T:\git\Resonite Mods\Reso360Spout\Reso360Spout\Reso360SpoutBootstrap\obj\Debug\net10.0\ref\Reso360SpoutBootstrap.dll

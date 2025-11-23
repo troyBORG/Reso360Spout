@@ -9,15 +9,15 @@ public enum GammaConvertType
     Linear_to_BT709
 }
 
-public class CubemapRenderer : System.IDisposable
-{
-    private CommandBuffer[] _commandBuffers = null;
-    private Shader _shader = null;
-    private Material _material = null;
-    private Mesh _mesh = null;
-    private int _cubemapSize = 0;
-    private RenderTexture _cubemap = null;
-    private RenderTexture _tempRT = null;
+    public class CubemapRenderer : System.IDisposable
+    {
+        private CommandBuffer[]? _commandBuffers = null;
+        private Shader? _shader = null;
+        private Material? _material = null;
+        private Mesh? _mesh = null;
+        private int _cubemapSize = 0;
+        private RenderTexture? _cubemap = null;
+        private RenderTexture? _tempRT = null;
 
     struct FaceInfo
     {
@@ -58,6 +58,10 @@ public class CubemapRenderer : System.IDisposable
         _cubemapSize = cubemapSize;
 
         _shader = UnityEntry.cubemapRenderer;
+        if (_shader == null)
+        {
+            throw new System.Exception("CubemapRenderer shader not loaded. Make sure the AssetBundle is loaded.");
+        }
         _material = new Material(_shader);
 
 
@@ -98,44 +102,44 @@ public class CubemapRenderer : System.IDisposable
 
         if (_material != null)
         {
-            Object.Destroy(_material);
+            UnityEngine.Object.Destroy(_material);
             _material = null;
         }
 
         if (_mesh != null)
         {
-            Object.Destroy(_mesh);
+            UnityEngine.Object.Destroy(_mesh);
             _mesh = null;
         }
 
         if (_tempRT != null)
         {
-            Object.Destroy(_tempRT);
+            UnityEngine.Object.Destroy(_tempRT);
             _tempRT = null;
         }
 
         if (_cubemap != null)
         {
-            Object.Destroy(_cubemap);
+            UnityEngine.Object.Destroy(_cubemap);
             _cubemap = null;
         }
 
-        if (_shader != null)
-        {
-            Object.Destroy(_shader);
-            _shader = null;
-        }
+        // Note: _shader is a reference to a static shader, don't destroy it
+        _shader = null;
     }
 
     public void RenderCubemap(Camera camera, int faceMask, float ipdOffset, GammaConvertType gammaConvert, bool correctCameraPositionInStereoRendering)
     {
+        if (_commandBuffers == null || _material == null || _cubemap == null)
+            return;
+
         if (_tempRT != null)
         {
             if (camera.allowHDR)
             {
                 if (_tempRT.format != RenderTextureFormat.DefaultHDR)
                 {
-                    Object.Destroy(_tempRT);
+                    UnityEngine.Object.Destroy(_tempRT);
                     _tempRT = null;
                 }
             }
@@ -143,7 +147,7 @@ public class CubemapRenderer : System.IDisposable
             {
                 if (_tempRT.format != RenderTextureFormat.Default)
                 {
-                    Object.Destroy(_tempRT);
+                    UnityEngine.Object.Destroy(_tempRT);
                     _tempRT = null;
                 }
             }
@@ -157,28 +161,31 @@ public class CubemapRenderer : System.IDisposable
             _tempRT.Create();
         }
 
-        switch (gammaConvert)
+        if (_material != null)
         {
-            case GammaConvertType.Linear_to_sRGB:
-                {
-                    SetEnableLinearToSRGB(true);
-                    SetEnableLinearToBT709(false);
-                }
-                break;
+            switch (gammaConvert)
+            {
+                case GammaConvertType.Linear_to_sRGB:
+                    {
+                        SetEnableLinearToSRGB(true);
+                        SetEnableLinearToBT709(false);
+                    }
+                    break;
 
-            case GammaConvertType.Linear_to_BT709:
-                {
-                    SetEnableLinearToSRGB(false);
-                    SetEnableLinearToBT709(true);
-                }
-                break;
+                case GammaConvertType.Linear_to_BT709:
+                    {
+                        SetEnableLinearToSRGB(false);
+                        SetEnableLinearToBT709(true);
+                    }
+                    break;
 
-            default:
-                {
-                    SetEnableLinearToSRGB(false);
-                    SetEnableLinearToBT709(false);
-                }
-                break;
+                default:
+                    {
+                        SetEnableLinearToSRGB(false);
+                        SetEnableLinearToBT709(false);
+                    }
+                    break;
+            }
         }
 
         var orgLocalRotation = camera.transform.localRotation;
@@ -227,7 +234,7 @@ public class CubemapRenderer : System.IDisposable
         }
     }
 
-    public RenderTexture Cubemap
+    public RenderTexture? Cubemap
     {
         get
         {
@@ -248,6 +255,8 @@ public class CubemapRenderer : System.IDisposable
 
     private void SetEnableKeyword(string keyword, bool flag)
     {
+        if (_material == null) return;
+
         if (flag)
         {
             _material.EnableKeyword(keyword);
